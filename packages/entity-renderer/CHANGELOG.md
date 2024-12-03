@@ -1,5 +1,11 @@
 # @zazuko/trifid-renderer-entity
 
+## 1.5.0
+
+### Minor Changes
+
+- b53af4e: Add `allowEndpointSwitch` configuration option in order to allow the use of another whitelisted endpoint by the sparql-proxy plugin.
+
 ## 1.4.1
 
 ### Patch Changes
