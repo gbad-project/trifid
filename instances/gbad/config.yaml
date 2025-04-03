@@ -1,5 +1,6 @@
-# server:
+server:
 #   logLevel: debug
+  logLevel: trace
 
 globals:
   datasetBaseUrl: env:DATASET_BASE_URL
@@ -20,29 +21,64 @@ plugins:
     paths: /
     methods: GET
     config:
-      path: file:welcome.hbs
+      path: /instances/gbad/welcome.hbs
 
   yasgui:
     module: trifid-plugin-yasgui
     paths:
       - /sparql
       - /sparql/
+    config:
+      #endpointUrl: https://example.com/query
+      #urlShortener: https://example.com/api/v1/shorten
+      defaultQuery: |
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+
+        SELECT (COUNT(*) AS ?count)
+        WHERE {
+          ?s ?p ?o .
+        }
+      # …other configuration fields
 
   graph-explorer:
     module: trifid-plugin-graph-explorer
     paths:
       - /graph-explorer
       - /graph-explorer/
+    config:
+      acceptBlankNodes: false
+      #template: views/graph-explorer.hbs
+      #dataLabelProperty: rdfs:label | <http://schema.org/name>
+      #schemaLabelProperty: rdfs:label | <http://schema.org/name>
+      language: en
+      languages:
+        - code: en
+          label: English
+        - code: de
+          label: German
+        - code: fr
+          label: French
+        - code: it
+          label: Italian
 
   spex:
     module: trifid-plugin-spex
     paths:
       - /spex
       - /spex/
+    config:
+      prefixes:
+        - prefix: add
+          namespace: https://data.archives.gov.on.ca/Schema/Description-Listings/
+        - prefix: auth
+          namespace: https://data.archives.gov.on.ca/Schema/Authority/
 
   entity-renderer:
     module: "@zazuko/trifid-entity-renderer"
     config:
+      path: /instances/gbad/render.hbs
       followRedirects: true
       labelLoader:
         chunkSize: 30
@@ -58,3 +94,4 @@ plugins:
       baseIRI: http://localhost:8080
       graphName: http://example.com/graph
       unionDefaultGraph: true
+      queryLogLevel: trace
