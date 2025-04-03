@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 load_dotenv(".env.local")
 
 # Server configuration
-ENCRYPTED_PORT = os.getenv("ENCRYPTED_PORT")
-UNENCRYPTED_PORT = os.getenv("UNENCRYPTED_PORT")
+ENCRYPTED_PORT = int(os.getenv("ENCRYPTED_PORT"))
+UNENCRYPTED_PORT = int(os.getenv("UNENCRYPTED_PORT"))
 LOCALHOST = os.getenv("LOCALHOST")
 CERTFILE = os.getenv("CERTFILE")  # Combined certificate and key file
 

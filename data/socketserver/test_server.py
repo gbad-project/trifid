@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 # Load environment variables from file
 load_dotenv(".env.local")
 
-UNENCRYPTED_PORT = os.getenv("UNENCRYPTED_PORT")
+UNENCRYPTED_PORT = int(os.getenv("UNENCRYPTED_PORT"))
 LOCALHOST = os.getenv("LOCALHOST")
 Handler = http.server.SimpleHTTPRequestHandler
 

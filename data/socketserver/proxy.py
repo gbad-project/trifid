@@ -14,7 +14,7 @@ load_dotenv(".env.local")
 CERTFILE = os.getenv("CERTFILE")  # Combined certificate and key file
 HTTP_BACKEND = os.getenv("HTTP_BACKEND")  # Your HTTP backend
 LOCALHOST = os.getenv("LOCALHOST")
-ENCRYPTED_PORT = os.getenv("ENCRYPTED_PORT")
+ENCRYPTED_PORT = int(os.getenv("ENCRYPTED_PORT"))
 
 class ReverseProxyHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
