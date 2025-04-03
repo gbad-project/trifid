@@ -39,7 +39,7 @@ plugins:
         SELECT (COUNT(*) AS ?count)
         WHERE {
           ?s ?p ?o .
-        }
+        } LIMIT 10
       # …other configuration fields
 
   graph-explorer:
