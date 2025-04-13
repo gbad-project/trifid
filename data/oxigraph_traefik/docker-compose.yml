@@ -1,0 +1,38 @@
+services:
+  traefik:
+    # The official v3 Traefik docker image
+    image: traefik:v3.3
+    container_name: traefik
+    # Enables the web UI and tells Traefik to listen to docker
+    command:
+      - --api.insecure=true
+      - --providers.docker
+    ports:
+      - "8080:8080" # The Web UI (enabled by --api.insecure=true)
+      - "8443:443"  # HTTPS for Oxigraph
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./config:/etc/traefik/config
+    networks:
+      - oxigraph-net
+
+  oxigraph:
+    image: oxigraph/oxigraph:latest
+    container_name: oxigraph
+    command: serve --location /data --bind 0.0.0.0:7878
+    volumes:
+      - ./data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oxigraph.rule=Host(`localhost`)"
+      - "traefik.http.routers.oxigraph.entrypoints=websecure"
+      - "traefik.http.routers.oxigraph.tls=true"
+      - "traefik.http.routers.oxigraph.middlewares=gbad-auth"
+      - "traefik.http.services.oxigraph.loadbalancer.server.port=7878"
+      - "traefik.http.middlewares.gbad-auth.basicauth.usersfile=/etc/traefik/config/.htpasswd"
+    networks:
+      - oxigraph-net
+
+networks:
+  oxigraph-net:

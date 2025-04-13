@@ -1,0 +1,20 @@
+api:
+  dashboard: true
+  insecure: true  # Only for local testing!
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+# Generate a self-signed certificate for local testing
+tls:
+  certificates:
+    - certFile: "/etc/traefik/config/local-cert.pem"
+      keyFile: "/etc/traefik/config/local-key.pem"

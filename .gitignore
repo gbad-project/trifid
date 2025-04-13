@@ -28,8 +28,14 @@ bin/
 /data/docs/
 /data/media/
 /data/www/
-/data/oxigraph/data/
-/data/socketserver/*
 
+/data/oxigraph/data/
+/data/oxigraph_caddy/*
+/data/oxigraph_traefik_old/*
+/data/oxigraph_traefik_new/*
+/data/oxigraph_traefik/data/
+/data/oxigraph_traefik/config/
+
+/data/socketserver/*
 !/data/socketserver/*.py
 !/data/socketserver/requirements.txt
