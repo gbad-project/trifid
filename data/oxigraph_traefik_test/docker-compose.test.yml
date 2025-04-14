@@ -3,17 +3,14 @@ services:
     # The official v3 Traefik docker image
     image: traefik:v3.3
     container_name: traefik
-    # Enables the web UI and tells Traefik to listen to docker
-    command:
-      - --api.insecure=true
-      - --providers.docker
+    # All static config is in traefik.test.yml
     ports:
-      - "8080:8080" # The Web UI (enabled by --api.insecure=true)
-      - "8443:443"  # HTTPS for Oxigraph
+      - "8080:8080" # Dashboard
+      - "8443:8443"  # HTTPS for Oxigraph - test
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.yml:/etc/traefik/traefik.yml:ro
       - ./config:/etc/traefik/config
+      - ./traefik.test.yml:/etc/traefik/traefik.yml:ro  # test env only
     networks:
       - oxigraph-net
 
@@ -25,11 +22,15 @@ services:
       - ./data:/data
     labels:
       - "traefik.enable=true"
+      # Set the router rule to your production domain
       - "traefik.http.routers.oxigraph.rule=Host(`localhost`)"
-      - "traefik.http.routers.oxigraph.entrypoints=websecure"
+      - "traefik.http.routers.oxigraph.entrypoints=webcustom"
       - "traefik.http.routers.oxigraph.tls=true"
+      # Enable basic auth middleware on the router
       - "traefik.http.routers.oxigraph.middlewares=gbad-auth"
+      # Define the service port exposed from the container
       - "traefik.http.services.oxigraph.loadbalancer.server.port=7878"
+      # Specify where Traefik can find the hashed credentials file
       - "traefik.http.middlewares.gbad-auth.basicauth.usersfile=/etc/traefik/config/.htpasswd"
     networks:
       - oxigraph-net

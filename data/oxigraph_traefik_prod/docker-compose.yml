@@ -1,0 +1,52 @@
+services:
+  traefik:
+    # The official v3 Traefik docker image
+    image: traefik:v3.3
+    container_name: traefik
+    # Enables the web UI and tells Traefik to listen to docker
+    command:
+      # Enable Docker provider and secure dashboard access
+      - --providers.docker
+      - --api.dashboard=false
+      - --api.insecure=false
+      # Define entrypoints for HTTP and HTTPS
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      # Configure Let’s Encrypt ACME resolver
+      - --certificatesResolvers.gbadresolver.acme.email=p.zhelnov@mail.utoronto.ca
+      - --certificatesResolvers.gbadresolver.acme.storage=/etc/traefik/config/acme.json
+      - --certificatesResolvers.gbadresolver.acme.httpChallenge.entryPoint=web
+    ports:
+      - "80:80"     # HTTP (could be used for redirection)
+      - "443:443"  # HTTPS for Oxigraph - prod
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config:/etc/traefik/config
+    networks:
+      - oxigraph-net
+
+  oxigraph:
+    image: oxigraph/oxigraph:latest
+    container_name: oxigraph
+    command: serve --location /data --bind 0.0.0.0:7878
+    volumes:
+      - ./data:/data
+    labels:
+      - "traefik.enable=true"
+      # Set the router rule to your production domain
+      - "traefik.http.routers.oxigraph.rule=Host(`data.test.gbad.ca`)"
+      - "traefik.http.routers.oxigraph.entrypoints=websecure"
+      - "traefik.http.routers.oxigraph.tls=true"
+      # Attach the Let’s Encrypt resolver
+      - "traefik.http.routers.oxigraph.tls.certresolver=gbadresolver"
+      # Enable basic auth middleware on the router
+      - "traefik.http.routers.oxigraph.middlewares=gbad-auth"
+      # Define the service port exposed from the container
+      - "traefik.http.services.oxigraph.loadbalancer.server.port=7878"
+      # Specify where Traefik can find the hashed credentials file
+      - "traefik.http.middlewares.gbad-auth.basicauth.usersfile=/etc/traefik/config/.htpasswd"
+    networks:
+      - oxigraph-net
+
+networks:
+  oxigraph-net:

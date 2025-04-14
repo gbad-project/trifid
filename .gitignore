@@ -24,6 +24,7 @@ bin/
 
 .env
 .env.local
+untracked/
 
 /data/docs/
 /data/media/
@@ -33,8 +34,8 @@ bin/
 /data/oxigraph_caddy/*
 /data/oxigraph_traefik_old/*
 /data/oxigraph_traefik_new/*
-/data/oxigraph_traefik/data/
-/data/oxigraph_traefik/config/
+/data/oxigraph_traefik_test/data/
+/data/oxigraph_traefik_test/config/
 
 /data/socketserver/*
 !/data/socketserver/*.py

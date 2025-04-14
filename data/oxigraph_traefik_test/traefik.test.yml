@@ -12,6 +12,8 @@ entryPoints:
     address: ":80"
   websecure:
     address: ":443"
+  webcustom:
+    address: ":8443"
 
 # Generate a self-signed certificate for local testing
 tls:
