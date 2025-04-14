@@ -92,6 +92,6 @@ plugins:
       url: env:FETCH_HANDLER_FILE
       contentType: env:FETCH_HANDLER_FILE_TYPE
       baseIRI: http://localhost:8080
-      graphName: http://example.com/graph
+      graphName: urn:x-rdflib:default
       unionDefaultGraph: true
       queryLogLevel: trace
