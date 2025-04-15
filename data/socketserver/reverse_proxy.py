@@ -8,10 +8,11 @@ import urllib.request  # For forwarding requests
 from dotenv import load_dotenv
 
 # Load environment variables from file
-load_dotenv(".env.local")
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__)) # Make sure this can launch from any dir
+load_dotenv(os.path.join(SCRIPT_DIR, ".env.local"))
 
 # Server configuration
-CERTFILE = os.getenv("CERTFILE")  # Combined certificate and key file
+CERTFILE = os.path.join(SCRIPT_DIR, os.getenv("CERTFILE"))  # Combined certificate and key file
 HTTP_BACKEND = os.getenv("HTTP_BACKEND")  # Your HTTP backend
 LOCALHOST = os.getenv("LOCALHOST")
 ENCRYPTED_PORT = int(os.getenv("ENCRYPTED_PORT"))
